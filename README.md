@@ -34,3 +34,5 @@ gcc -o man_scan man_lex.c
 
 #### 作者
 曾彬芮  2021/10/22 于四川成都
+
+( 对代码有疑问可联系作者： e-mail： brettemail@163.com || 392184316@qq.com )
