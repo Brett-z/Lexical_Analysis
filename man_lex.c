@@ -1,15 +1,15 @@
 /**
-	************************************************************
-	************************************************************
+	*********************************************************************************************************
+	*********************************************************************************************************
 	*	作者： 		曾彬芮
 	* 
 	*	日期： 		2021-10-22
 	*
 	*	版本： 		V1.0
 	*
-	*	说明： 		词法分析器
-	************************************************************
-	************************************************************
+	*	说明： 		词法分析器（并未列完所有的关键字或运算符，且暂时无法识别16进制数）
+	*********************************************************************************************************
+	*********************************************************************************************************
 **/
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,11 +31,35 @@ int borderAnalyze(char file[], int size);
 // stringAnalyze 包含对标识符和关键字的分析
 void stringAnalyze(char file[], int size);
 
-// int constantAnalyze(char file[], int size){
-//     int num = 0;
-
-//     return num;
-// }
+int constantAnalyze(char file[], int size){
+    int num = 0, count = 0, store = 0, allowOther = 1;
+    char number[MAX_LEN_STRING];
+    while(count<size){
+        while(file[count]>='0' && file[count]<='9'){
+            number[store] = file[count];
+            store++; count++;
+            if(file[count]=='.' && allowOther==1){
+                number[store] = file[count];
+                store++; count++; allowOther = 0;
+            }
+        }
+        if(store!=0){
+            num ++;
+            if((file[count-store-1]>='a'&&file[count-store-1]<='z')||\
+            (file[count-store-1]>='A'&&file[count-store-1]<='Z')||file[count-store-1]=='_'){
+                num --; 
+                memset(number, 0, sizeof(number));
+                store = 0;  
+            }else{
+                printf("<%s  constant>\n", number);
+                memset(number, 0, sizeof(number));
+                store = 0;  
+            }
+        }
+        count ++;
+    }
+    return num;
+}
 
 int operatorAnalyze(char file[], int size){
     int num = 0, count = 0;
@@ -187,12 +211,12 @@ int main(int argc, char ** argv)
     fclose(fp);
 
     // 调用函数计算每个量的值
-    // constant = constantAnalyze(fileString, filesize);
+    constant = constantAnalyze(fileString, filesize);
     operator = operatorAnalyze(fileString, filesize);
     border = borderAnalyze(fileString, filesize);
     stringAnalyze(fileString, filesize);
 
-    // printf("constant_num is : %d\n", constant);
+    printf("constant_num is : %d\n", constant);
     printf("operator_num is : %d\n", operator);
     printf("border_num is : %d\n", border);
     printf("identifier_num is : %d\n", identifier);
