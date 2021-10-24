@@ -68,6 +68,10 @@ If you want to test case1, you can use:
 
 4.  Do not change except  **auto_lex.l && man_lex.c && 01~06 test cases** , Otherwise, it may not be used correctly.
 
+#### Test
+
+![MV(HUP597CE9{O8EOK}VZNK](https://user-images.githubusercontent.com/71238790/138584197-92b8c749-9b7d-432e-bf58-14dcae28e19d.png)
+
 #### Author
 Brett Tseng  2021/10/22 Chengdu Sichuan Province
 
