@@ -173,7 +173,12 @@ void stringAnalyze(char file[], int size){
                 printf("<%s  KeyWord>\n", string);
             }else{
                 identifier++;
-                printf("<%s identifier>\n", string);
+                // 过滤16进制
+                if((string[0]=='x'||string[0]=='X') && file[count-store-1]=='0'){
+                    identifier--;
+                }else{
+                    printf("<%s identifier>\n", string);
+                }
             }
             memset(string, 0, sizeof(string));
             store = 0;
