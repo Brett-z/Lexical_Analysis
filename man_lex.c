@@ -5,9 +5,9 @@
 	* 
 	*	日期： 		2021-10-22
 	*
-	*	版本： 		V1.0
+	*	版本： 		V2.0（增加了对16进制常量的识别）
 	*
-	*	说明： 		词法分析器（并未列完所有的关键字或运算符，且暂时无法识别16进制数）
+	*	说明： 		词法分析器（并未列完所有的关键字或运算符）
 	*********************************************************************************************************
 	*********************************************************************************************************
 **/
@@ -31,22 +31,40 @@ int borderAnalyze(char file[], int size);
 // stringAnalyze 包含对标识符和关键字的分析
 void stringAnalyze(char file[], int size);
 
-int constantAnalyze(char file[], int size){
+
+int constantAnalyze(char* file,int size){
     int num = 0, count = 0, store = 0, allowOther = 1;
     char number[MAX_LEN_STRING];
-    while(count<size){
-        while(file[count]>='0' && file[count]<='9'){
-            number[store] = file[count];
-            store++; count++;
-            if(file[count]=='.' && allowOther==1){
+    while(count<size)
+    {
+        // 判断是否为16进制数
+        if(file[count] == '0' && (file[count+1] == 'x' || file[count+1] == 'X')){
+            while((file[count+2] >= '0' && file[count+2] <= '9' ) || \
+            (file[count+2] >= 'A' && file[count+2] <= 'F' ) || \
+            (file[count+2] >= 'a' && file[count+2] <= 'f' ))
+            {  
                 number[store] = file[count];
-                store++; count++; allowOther = 0;
+                count++; store++;
+            }
+            number[store] = file[count];
+            number[++store] = file[++count];
+        }else{
+            // 判断8进制与10进制
+            while(file[count] >= '0' && file[count] <= '9'){
+                number[store] = file[count];
+                store++ ; count++;
+                if(file[count] == '.' && allowOther == 1){
+                    number[store] = file [count];
+                    store++; count++; allowOther = 0;
+                }
             }
         }
+        // 如果常量是标识符的一部分，则省略
         if(store!=0){
             num ++;
             if((file[count-store-1]>='a'&&file[count-store-1]<='z')||\
-            (file[count-store-1]>='A'&&file[count-store-1]<='Z')||file[count-store-1]=='_'){
+            (file[count-store-1]>='A'&&file[count-store-1]<='Z')||\
+            file[count-store-1]=='_'){
                 num --; 
                 memset(number, 0, sizeof(number));
                 store = 0;  
@@ -56,10 +74,11 @@ int constantAnalyze(char file[], int size){
                 store = 0;  
             }
         }
-        count ++;
+        count ++; allowOther = 1;
     }
     return num;
 }
+
 
 int operatorAnalyze(char file[], int size){
     int num = 0, count = 0;
